@@ -1,0 +1,10 @@
+buyer: view/search product, place order
+	catalog page <==> cart page ==> checkout ==> receipt
+	
+seller: organize product, handle order, product delivery
+	login ==> menu ==> product page 
+					   ==>add/edit/delete product
+				   ==> pending order
+					   ==>handle/ignore
+
+current step: implement seller/product page (static file?) 
