@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %} <h3 style="color:blue">Store Page</h3> {% endblock %}
+{% block content %} 
+{% for item in products %}
+<div class="row">
+  <div class="col-md-2">
+	<img src="{{item.image}}" alt="product" class="img-thumbnail">
+  </div>
+  <div class="col-md-10">
+	<p class="bg-info">{{item.name}}</p>
+	<hr>
+    <p class="bg-warning">{{item.description}}</p>
+	<hr>
+	<p class="bg-info">Price: ${{item.price}}</p>
+  </div>
+</div>
+
+<a type="button" class="btn btn-primary" style="float:right" productid="{{item.id}}" href="#">Add to Cart</a>
+{% endfor %}
+{% endblock %}

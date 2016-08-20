@@ -1,0 +1,36 @@
+<html>
+<head>
+	<title>{% block title %}{% endblock %}</title>
+	{% load staticfiles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'shopping/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'shopping/layout.css' %}">
+</head>
+<body>
+	<div class="topbar">
+		<div class="fill">
+			<div class="container">
+				<a class="brand"href="#">Depot</a>
+				<ul class="nav">
+					<li class="active"><ahref="#">首页</a></li>
+					<li><a href="#about">问题</a></li>
+					<li><a href="#contact">新闻</a></li>
+					<li><a href="#contact">联系我们</a></li>
+				</ul>
+				<form action=""class="pull-right">
+					<input class="input-small"type="text"placeholder="用户名">
+					<input class="input-small"type="password"placeholder="密码">
+					<button class="btn"type="submit">登录</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="content">
+			<div class="page-header">
+				<h1>{% block pagename %} 页面名称 {% endblock %}</h1>
+			</div>
+			{% block content %}{% endblock %}
+		</div>
+	</div>
+</body>
+</html>

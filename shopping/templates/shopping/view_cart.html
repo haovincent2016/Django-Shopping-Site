@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}My Cart{% endblock %}
+{% block pagename %}My Cart{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="span10">
+		<table class="condensed-table">
+		<thead>
+			<tr>
+				<th class="header">Quantity</th>
+				<th class="yellow header">Name</th>
+				<th	class="blue header">Price Per Item</th>
+				<th	class="green header">Subtotal</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in cart.items %}
+			<tr>
+				<th>{{item.quantity}}</th>
+				<td>{{item.product.name}}</td>
+				<td>{{item.unit_price}}</td>
+				<td>{% widthratio item.quantity 1 item.item_price %} </td>
+			</tr>
+			{% endfor %}
+			<tr>
+			<th></th>
+			<td></td>
+			<th>Total Price:</th>
+			<th>{{cart.total_price}}</th>
+			</tr>
+		</tbody>
+		</table>
+	</div>
+	<div class="span4">
+		<p><a class="btn primary span2"href="{% url 'shopping:catalog' %}">Continue Shopping</a></a></p>
+		<p><a class="btn danger span2"href="#{% url 'shopping:clearcart' %}">Clear Cart</a></p>
+		<p><a class="btn success span2"href="#">Checkout</a></p>
+	</div>
+</div>
+{% endblock %}
