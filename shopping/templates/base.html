@@ -3,7 +3,7 @@
 	<title></title>
 	{% load staticfiles %}
 	<link rel="stylesheet" type="text/css" href="{% static 'shopping/bootstrap.min.css' %}">
-	<!-- <link rel="stylesheet" type="text/css" href="{% static 'shopping/layout.css' %}"> -->
+	<script src="{% static 'shopping/jquery.min.js' %}"></script>
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -36,17 +36,8 @@
   <button type="submit" class="btn btn-default">login</button>
 </form>
 <hr>		
-<div class="container">
-	<div class="content">
-		{% block title %}{% endblock %}
-		{% block content %}{% endblock %}
-	</div>
-</div>
-{% block js %}{% endblock %}  
-<script>  
-$(function () {
-	  {% block on_ready %}{% endblock %}  
-});  
-</script> 
+<div>{% block title %}{% endblock %}</div>
+<div>{% block content %}{% endblock %}</div>
+{% block js %}{% endblock %} 
 </body>
 </html>

@@ -10,8 +10,15 @@ class Product(models.Model):
 	price = models.DecimalField(max_digits=9, decimal_places=2)
 	free_shipping = models.BooleanField()
 
+class Order(models.Model):
+	name = models.CharField(max_length=100)
+	email = models.EmailField()
+	address = models.TextField()
+	payment = models.CharField(max_length=50)
+
 class CartItem(models.Model):
 	product = models.ForeignKey(Product)
+	order = models.ForeignKey(Order, null=True)
 	item_price = models.DecimalField(max_digits=9, decimal_places=2)
 	quantity = models.IntegerField()
 
@@ -24,8 +31,9 @@ class Cart(object):
 		for item in self.items:
 			if item.product.id == product.id:
 				item.quantity += 1
-		#whenever an item added is unique, append to items and return from the method
+				return
 		return self.items.append(CartItem(product=product, item_price=product.price, quantity=1))
-		
+
+ 
 	
     

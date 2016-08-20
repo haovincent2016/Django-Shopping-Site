@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} <h3 style="color:blue">The Product List</h3> {% endblock %}
+{% block title %} <h3 style="color:blue; text-align:mid">The Product List</h3> {% endblock %}
 {% block content %} 
 {% for item in products.object_list %}
 <div class="row">
@@ -27,6 +27,9 @@
 		<a type="button" class="btn btn-success" href="{% url 'shopping.views.edit_product' item.id %}">edit</a> 
 		<a type="button" class="btn btn-danger" href="{% url 'shopping.views.delete_product' item.id %}">delete</a>
 		<a type="button" class="btn btn-primary" style="float: right;" href="{% url 'shopping.views.add_product' %}">add new product</a>
+	</div>
+</div>
+<hr>
 {% endfor %}
 		<hr>
 		{% if products.has_previous %}
@@ -36,5 +39,4 @@
 		{% if products.has_next %}
         <a href="?page={{ products.next_page_number }}">next page</a>
 		{% endif %}
-</div>
 {% endblock %}

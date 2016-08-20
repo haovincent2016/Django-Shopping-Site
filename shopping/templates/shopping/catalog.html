@@ -1,20 +1,92 @@
 {% extends "base.html" %}
-{% block title %} <h3 style="color:blue">Store Page</h3> {% endblock %}
+{% block title %} <h3 style="color:blue; text-align:center;">Store Page</h3> {% endblock %}
 {% block content %} 
-{% for item in products %}
 <div class="row">
-  <div class="col-md-2">
-	<img src="{{item.image}}" alt="product" class="img-thumbnail">
-  </div>
-  <div class="col-md-10">
-	<p class="bg-info">{{item.name}}</p>
+	<div class="col-md-9">
+	{% for item in products %}
+	<div class="row">
+	  <div class="col-md-3">
+		<img src="{{item.image}}" alt="product" class="img-thumbnail">
+	  </div>
+	  <div class="col-md-9">
+		<p class="bg-info">{{item.name}}</p>
+		<hr>
+		<p class="bg-warning">{{item.description}}</p>
+		<hr>
+		<!--  href="{% url 'shopping.views.add_to_cart' item.id %}" -->
+		<a type="button" class="btn btn-primary" style="float:right" productid="{{item.id}}"  href="{% url 'shopping.views.add_to_cart' item.id %}">Add to Cart</a>
+		<button type="button" class="btn btn-info" style="float:right">Price: ${{item.price}}</button>
+	  </div>
+	</div>
 	<hr>
-    <p class="bg-warning">{{item.description}}</p>
-	<hr>
-	<p class="bg-info">Price: ${{item.price}}</p>
-  </div>
+	{% endfor %} 
+	</div> 
+	<div class="col-md-2">
+		<!-- cart part -->
+		<div class="row">
+		<h4 style="color:brown">My Cart</h4> 
+			<table class="table">
+				<thead>
+				<tr>
+					<th>product</th>
+					<th>quantity</th>
+					<th>subtotal</th>
+				</tr>
+				<thead>
+				<tbody id="items">
+				</tbody>
+				{% for item in cart.items %} 
+				<tr>
+					<td>{{ item.product.name }}</td>
+					<td>{{ item.quantity }}</td>
+					<td>${% widthratio item.item_price 1 item.quantity %}</td>
+				</tr>
+				{% endfor %} 
+				<tfoot>
+				<tr>
+					<td></td>
+					<td>Total: </td>
+					<td id="total">${{ cart.total_price|floatformat:"2" }}</td>
+				</tr>
+				</tfoot>
+			</table>
+			<a type="button" class="btn btn-danger" style="float:right" href="{% url 'shopping.views.clear_cart' %}">Clear</a>  
+			<a type="button" class="btn btn-success" style="float:right" href="{% url 'shopping.views.create_order' %}">Checkout</a> 
+		</div>
+		<br>
+		<br>
+		<hr>
+		<br>
+		<br>
+		<!-- order part -->
+		<div class="row">
+			<h4 style="color:brown">My Order</h4>
+			<a type="button" class="btn btn-info" style="float:right" href="{% url 'shopping.views.view_order' %}">View history orders</a>  
+		</div>
+	</div>
 </div>
+{% endblock %}
+{% block js %}
+<script>
+function refreshCart(items){
+	var total = 0;
+	var tbody = $('tbody#items')[0];
+	tbody.innerHTML = "";
+	for(var i=0;i<items.length;i++){
+		total+=items[i].quantity*items[i].item_price;
+		$('table.table').append('<tr><td>'+items[i].quantity+'x </td>'+
+			'<td>'+items[i].product+'</td><td>$'+items[i].item_price+'</td></tr>');
+	}
+	$('#total')[0].innerHTML = '$ '+total;
+}
 
-<a type="button" class="btn btn-primary" style="float:right" productid="{{item.id}}" href="#">Add to Cart</a>
-{% endfor %}
+$(document).ready(function(){
+//store.html on ready
+	<!-- $.getJSON('/shopping/restapi/',refreshCart); -->
+	$('a.btn[productid]').on("click",function(){
+		var product_id=$(this).attr("productid");
+		$.post("/shopping/restapi/post",{product:product_id},refreshCart);
+	});
+});
+</script>
 {% endblock %}

@@ -5,8 +5,35 @@ from django.template import loader
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
 
-from .forms import ProductForm, DeleteForm
-from .models import Product, CartItem, Cart
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .serializers import ShoppingSerializer
+from rest_framework.renderers import JSONRenderer
+
+from .forms import ProductForm, OrderForm, DeleteForm
+from .models import Product, CartItem, Cart, Order
+
+# class JSONResponse(HttpResponse):
+	# def __init__(self, data, **kwargs):
+		# content = JSONRenderer().render(data)
+		# kwargs['content_type'] = 'application/json'
+		# super(JSONResponse, self).__init__(content, **kwargs)
+
+class CartList(APIView):
+	def get(self, request, *args, **kwargs):
+		#return request.session['cart'].items
+		cartitems = CartItem.objects.all()
+		serializer = ShoppingSerializer(cartitems, many=True)
+		return Response(serializer.data)
+	def post(self, request, *args, **kwargs):
+		#id is from post request key product value
+		product = Product.objects.get(id=request.POST['product'])
+		cart = request.session['cart']
+		cart.add_product(product)
+		#update cart session
+		request.session['cart'] = cart
+		return request.session['cart'].items
+		
 #add
 def add_product(request):
 	form = ProductForm(request.POST or None)
@@ -78,7 +105,7 @@ def view_cart(request):
 	template = loader.get_template('shopping/view_cart.html')
 	if not cart:
 		cart = Cart()
-	request.session['cart'] = cart
+		request.session['cart'] = cart
 	context = {'cart': cart}
 	return HttpResponse(template.render(context, request))
 #add to cart
@@ -87,7 +114,7 @@ def add_to_cart(request,id):
 	cart = request.session.get("cart",None)
 	if not cart:
 		cart = Cart()
-	request.session["cart"] = cart
+		request.session["cart"] = cart
 	cart.add_product(product)
 	request.session['cart'] = cart
 	return view_cart(request)
@@ -96,11 +123,46 @@ def clear_cart(request):
 	request.session['cart'] = Cart()
 	return view_cart(request)
 
-# #Rest api
-# def post(self, request, *args, **kwargs):
-	# print request.POST['product']
-	# product = Product.objects.get(id=request.POST['product'])
-	# cart = request.session['cart']
-	# cart.add_product(product)
-	# request.session['cart'] = cart
-	# return request.session['cart'].items
+#create order
+def create_order(request):
+	form = OrderForm(request.POST or None)
+	if form.is_valid():
+		order = form.save()
+		for item in request.session['cart'].items:
+			item.order = order
+			item.save()
+		clear_cart(request)
+		return HttpResponseRedirect(reverse('catalog'))
+	template = loader.get_template('shopping/create_order.html')
+	context = {'form': form}
+	return HttpResponse(template.render(context, request))
+
+#view all orders
+def view_order(request):
+	order_list = Order.objects.all()
+	#show 15 items per page
+	paginator = Paginator(order_list, 15)
+	page = request.GET.get('page')
+	#return specific page content or first page(NAI) or last page(OOR)
+	try:
+		orders = paginator.page(page)
+	except PageNotAnInteger:
+		orders = paginator.page(1)
+	except EmptyPage:
+		orders = paginator.page(paginator.num_pages)
+	template = loader.get_template('shopping/view_order.html')
+	context = {'orders': orders}
+	return HttpResponse(template.render(context, request))
+#delete specific order history
+def delete_order(request, id):
+	order = get_object_or_404(Order, id=id)
+	if request.method == 'POST':
+		form = DeleteForm(request.POST, instance=order)
+		if form.is_valid():
+			order.delete()
+			return HttpResponseRedirect(reverse('catalog'))
+	else:
+		form = DeleteForm(instance=order)
+	template = loader.get_template('shopping/delete_order.html')
+	context = {'form': form}
+	return HttpResponse(template.render(context, request))

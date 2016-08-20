@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %} <h3 style="color:blue;text-align:center;">My Order History</h3> {% endblock %}
+{% block content %} 
+{% for item in orders.object_list %}
+<div class="row">
+	<div class="col-md-8 col-md-offset-2">
+		<h5 style="color:blue;text-align:center;">OderID: {{item.id}}</h5>
+		<p class="bg-warning">Purchaser name: {{item.name}}</p>
+		<hr>
+		<p class="bg-info">Email: {{item.email}}</p>
+		<hr>
+		<p class="bg-warning">Address: {{item.address}}</p>
+		<hr>
+		<p class="bg-info">payment: {{item.payment}}</p>
+		<a class="btn btn-primary" href="{% url 'shopping.views.catalog' %}">Continue Shopping</a>
+		<a type="button" class="btn btn-danger"  style="float:left" href="{% url 'shopping.views.delete_order' item.id %}">delete</a>
+	</div>
+</div>
+<hr>
+{% endfor %}
+		<hr>
+		{% if orders.has_previous %}
+		<a href="?page={{ orders.previous_page_number }}">previous page</a>
+		{% endif %}
+		<p class="bg-info">current page: {{ orders.number }}, total page: {{ orders.paginator.num_pages }}</pe>
+		{% if orders.has_next %}
+        <a href="?page={{ orders.next_page_number }}">next page</a>
+		{% endif %}
+{% endblock %}

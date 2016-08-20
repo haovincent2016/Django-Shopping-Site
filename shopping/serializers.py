@@ -5,3 +5,4 @@ class ShoppingSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CartItem
 		fields = '__all__'
+	
