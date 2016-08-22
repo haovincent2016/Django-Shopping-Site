@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} <h3 style="color:blue; text-align:mid">The Product List</h3> {% endblock %}
+{% block title %} <h3 style="color:brown;text-align:center">The Product List</h3> {% endblock %}
 {% block content %} 
 {% for item in products.object_list %}
 <div class="row">
@@ -31,12 +31,11 @@
 </div>
 <hr>
 {% endfor %}
-		<hr>
-		{% if products.has_previous %}
-		<a href="?page={{ products.previous_page_number }}">previous page</a>
-		{% endif %}
-		<p class="bg-info">current page: {{ products.number }}, total page: {{ products.paginator.num_pages }}</pe>
-		{% if products.has_next %}
-        <a href="?page={{ products.next_page_number }}">next page</a>
-		{% endif %}
+{% if products.has_previous %}
+<a href="?page={{ products.previous_page_number }}">previous page</a>
+{% endif %}
+<p class="bg-info" style="text-align:center; font-size:16px; color:brown;">current page: {{ products.number }}, total page: {{ products.paginator.num_pages }}</pe>
+{% if products.has_next %}
+<a href="?page={{ products.next_page_number }}">next page</a>
+{% endif %}
 {% endblock %}

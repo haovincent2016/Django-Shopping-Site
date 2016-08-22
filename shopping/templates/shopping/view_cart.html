@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}<h3 style="color:blue; text-align:center;">My Chart</h3> {% endblock %}
+{% block title %}<h3 style="color:blue; text-align:center;">My Cart</h3> {% endblock %}
 {% block content %}
 <div class="row">
 	<div class="col-md-8 col-md-offset-2">
@@ -18,9 +18,9 @@
 				</tr>
 	</table>
 	<div>
-		<a class="btn btn-success" style="margin-left:20px;" href="#">Checkout</a>
-		<a class="btn btn-primary"href="{% url 'shopping.views.catalog' %}">Continue Shopping</a>
-		<a class="btn btn-danger "href="#{% url 'shopping.views.clear_cart' %}">Clear Cart</a>
+		<a class="btn btn-success" style="margin-left:20px;" href="{% url 'shopping.views.create_order' %}">Checkout</a>
+		<a class="btn btn-primary" href="{% url 'shopping.views.catalog' %}">Continue Shopping</a>
+		<a class="btn btn-danger " href="{% url 'shopping.views.clear_cart' %}">Clear Cart</a>
 		
 	</div>
 	</div>

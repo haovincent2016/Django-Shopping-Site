@@ -18,9 +18,15 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
+from shopping.views import login_view, logout_view
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-	url(r'^shopping/', include('shopping.urls'))
+	url(r'^shopping/', include('shopping.urls')),
+	#login
+	url(r'^seller/login/$', login_view),
+	#logout
+	url(r'^seller/logout/$', logout_view),
 ]
 
 # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

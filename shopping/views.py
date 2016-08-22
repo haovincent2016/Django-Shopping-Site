@@ -5,6 +5,9 @@ from django.template import loader
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
 
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import ShoppingSerializer
@@ -61,7 +64,8 @@ def view_product(request, id):
 	template = loader.get_template('shopping/view_product.html')
 	context = {'product_instance':  product_instance}
 	return HttpResponse(template.render(context, request))
-#list
+#list (require login to access)
+@login_required
 def product_list(request):
 	product_list = Product.objects.all()
 	#show 15 items per page
@@ -121,7 +125,7 @@ def add_to_cart(request,id):
 #clear cart
 def clear_cart(request):
 	request.session['cart'] = Cart()
-	return view_cart(request)
+	return catalog(request)
 
 #create order
 def create_order(request):
@@ -166,3 +170,17 @@ def delete_order(request, id):
 	template = loader.get_template('shopping/delete_order.html')
 	context = {'form': form}
 	return HttpResponse(template.render(context, request))
+
+#login
+def login_view(request):
+	user = authenticate(username=request.POST['username'], password=request.POST['password'])
+	if user is not None:
+		login(request, user)
+		print(request.user)
+		return product_list(request)
+	else:
+		return catalog(request)
+#logout
+def logout_view(request):
+	logout(request)
+	return catalog(request)

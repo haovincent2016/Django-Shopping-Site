@@ -26,5 +26,5 @@ urlpatterns = [
 	#view order
 	url(r'^order/view/$', views.view_order),
 	#delete order
-	url(r'^order/delete/(?P<id>[^/]+)$', views.delete_order)
+	url(r'^order/delete/(?P<id>[^/]+)$', views.delete_order),
 ]
